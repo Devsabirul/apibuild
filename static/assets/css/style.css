@@ -1,0 +1,79 @@
+#sidebarleft {
+    background-color: #F3F3F3;
+    height: 100vh;
+    width: 20%;
+    /* box-shadow: 2px 0px 3px #c7c7c7; */
+}
+
+#sidebarright {
+    height: 100vh;
+    width: 80%;
+}
+
+#header {
+    height: 25px;
+    background: #888888;
+}
+
+div#header p {
+    font-size: 15px;
+    color: white;
+    margin-left: 15px;
+    outline-color: black;
+}
+
+nav#navbar {
+    width: 100%;
+    background: #ECECEC;
+}
+
+nav#navbar ul {
+    display: flex;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    height: 30px;
+    font-weight: 400;
+    line-height: 30px;
+}
+
+nav#navbar ul li {
+    width: 120px;
+    list-style: none;
+}
+
+nav#navbar ul li a {
+    text-decoration: none;
+    color: #393939;
+    font-size: 15px;
+}
+
+/* crate table  */
+div#button {
+    text-align: center;
+    margin: 10px 25px;
+    border: 1px solid gray;
+    width: 130px;
+    border-radius: 5px;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 4px 0px;
+    box-shadow: 0px 0px 3px #c5c5c5;
+    background: white;
+    z-index: 9999999;
+    position: relative;
+}
+
+div#createtabelcontainer {
+    background: #EEEEEE;
+    padding: 30px 15px;
+    border: 1px solid gray;
+    border-radius: 5px;
+    /* position: relative;
+    z-index: -99999; */
+    margin-top: -25px;
+}
+
+table.table.table-sm {
+    --bs-table-bg: none !important;
+}

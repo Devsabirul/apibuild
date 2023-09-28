@@ -1,0 +1,171 @@
+{% extends "base/base.html" %}
+{% load static %}
+{% block title %}Create Database{% endblock title %}
+{% block body %}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <div id="createTable">
+                <div id="button">
+                    <span>📝</span> Create Table
+                </div>
+                <div id="createtabelcontainer">
+                    <form action="" method="post">
+                        {% csrf_token %}
+                        <div class="d-flex">
+                            <div class="tablename">
+                                <label for="tablename" style="font-size: 15px;color: #424242;">Name:</label>
+                                <input class="" id="tablename" type="text" name="tablename"
+                                    style="outline: none;width: 15em;margin-left: 5px;">
+                            </div>
+                            <div class="colnum" style="margin-left: 25px;">
+                                <label for="colnum" style="font-size: 15px;color: #424242;">Number of columns:</label>
+                                <input class="" value="0" id="field-count" type="number" name="colnum"
+                                    style="outline: none;width: 15em;margin-left: 5px;" disabled>
+                            </div>
+                            <div class="createdbutton">
+                                <button type="submit" class="btn btn-outline-secondary btn-sm"
+                                    style="margin-left: 5px;">Create</button>
+                            </div>
+                        </div>
+                        <table class="table table-sm mt-4" id="dynamic-table">
+                            <thead>
+                                <tr>
+                                    <td scope="col">Name</td>
+                                    <td scope="col">Type</td>
+                                    <td scope="col">Length/Values</td>
+                                    <td scope="col">Default</td>
+                                    <td scope="col">Null</td>
+                                    <td scope="col">Blank</td>
+                                    <td scope="col">Action</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- <tr>
+                                    <td>
+                                        <input type="text" id="fieldname">
+                                    </td>
+                                    <td>
+                                        <select style="padding: 3px !important; width: 115px;" id="type">
+                                            <option value="CharField">CharField</option>
+                                            <option value="IntegerField">IntegerField</option>
+                                            <option value="IntegerField">IntegerField</option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <input type="number" id="length" style="width: 150px;" value="500">
+                                    </td>
+                                    <td>
+                                        <input type="text" id="default" style="width: 150px;">
+                                    </td>
+                                    <td>
+                                        <select style="padding: 3px !important; width: 115px;" id="null">
+                                            <option value="True">True</option>
+                                            <option value="False">False</option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <select style="padding: 3px !important; width: 115px;" id="blank">
+                                            <option value="True">True</option>
+                                            <option value="False">False</option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-secondary"
+                                            style="font-weight: bold;width: 50px;">X</button>
+                                    </td>
+                                </tr> -->
+                            </tbody>
+                        </table>
+                    </form>
+                    <div class="addrow">
+                        <button class="btn btn-secondary btn-sm" style="margin-left: 5px;" id="add-row">Add
+                            Field</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    let fieldCount = 0; // Initialize row count to 0
+
+    // Function to update the row count on the page
+    function updatefieldCount() {
+        const fieldCountElement = document.getElementById('field-count');
+        fieldCountElement.textContent = fieldCount;
+    }
+    // Function to add a new row
+    function addRow() {
+        // Get a reference to the table and tbody
+        const table = document.getElementById('dynamic-table');
+        const tbody = table.querySelector('tbody');
+
+        // Create a new row
+        const newRow = document.createElement('tr');
+
+        // Create and append cells with the specified content
+        const cell1 = document.createElement('td');
+        cell1.innerHTML = '<input type="text" id="fieldname">';
+        newRow.appendChild(cell1);
+
+        const cell2 = document.createElement('td');
+        cell2.innerHTML = `
+        <select style="padding: 3px !important; width: 115px;" id="type">
+          <option value="CharField">CharField</option>
+          <option value="IntegerField">IntegerField</option>
+          <option value="IntegerField">IntegerField</option>
+        </select>
+      `;
+        newRow.appendChild(cell2);
+
+        const cell3 = document.createElement('td');
+        cell3.innerHTML = '<input type="number" id="length" style="width: 150px;" value="500">';
+        newRow.appendChild(cell3);
+
+        const cell4 = document.createElement('td');
+        cell4.innerHTML = '<input type="text" id="default" style="width: 150px;">';
+        newRow.appendChild(cell4);
+
+        const cell5 = document.createElement('td');
+        cell5.innerHTML = `
+        <select style="padding: 3px !important; width: 115px;" id="null">
+          <option value="True">True</option>
+          <option value="False">False</option>
+        </select>
+      `;
+        newRow.appendChild(cell5);
+
+        const cell6 = document.createElement('td');
+        cell6.innerHTML = `
+        <select style="padding: 3px !important; width: 115px;" id="blank">
+          <option value="True">True</option>
+          <option value="False">False</option>
+        </select>
+      `;
+        newRow.appendChild(cell6);
+
+        const cell7 = document.createElement('td');
+        const deleteButton = document.createElement('button');
+        deleteButton.className = 'btn btn-sm btn-outline-secondary';
+        deleteButton.style.fontWeight = 'bold';
+        deleteButton.style.width = '50px';
+        deleteButton.textContent = 'X';
+
+        // Add a click event listener to remove the row when the button is clicked
+        deleteButton.addEventListener('click', function () {
+            tbody.removeChild(newRow); // Remove the row when the button is clicked
+        });
+
+        cell7.appendChild(deleteButton);
+        newRow.appendChild(cell7);
+
+        // Append the new row to the tbody
+        tbody.appendChild(newRow);
+    }
+
+    // Add an event listener to the "Add Row" button
+    const addButton = document.getElementById('add-row');
+    addButton.addEventListener('click', addRow);
+</script>
+{% endblock body %}
