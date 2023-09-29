@@ -10,7 +10,7 @@
                     <span>📝</span> Create Table
                 </div>
                 <div id="createtabelcontainer">
-                    <form action="" method="post">
+                    <form action="" method="post" id="my-form">
                         {% csrf_token %}
                         <div class="d-flex">
                             <div class="tablename">
@@ -31,7 +31,7 @@
                         <table class="table table-sm mt-4" id="dynamic-table">
                             <thead>
                                 <tr>
-                                    <td scope="col">Name</td>
+                                    <td scope="col">Field Name</td>
                                     <td scope="col">Type</td>
                                     <td scope="col">Length/Values</td>
                                     <td scope="col">Default</td>
@@ -193,9 +193,52 @@
         // Append the new row to the tbody
         tbody.appendChild(newRow);
     }
+    // Function to get all input values as an array
+    function getAllData() {
+        // Get a reference to the table and tbody
+        const table = document.getElementById('dynamic-table');
+        const tbody = table.querySelector('tbody');
+
+        // Get all rows in the tbody
+        const rows = tbody.querySelectorAll('tr');
+
+        // Initialize an array to store the data
+        const data = [];
+
+        // Loop through each row and extract input values
+        rows.forEach(function (row) {
+            const inputs = row.querySelectorAll('input, select');
+            const rowData = {};
+
+            inputs.forEach(function (input) {
+                const id = input.id;
+                const value = input.value;
+                rowData[id] = value;
+            });
+
+            data.push(rowData);
+        });
+
+        return data;
+    }
 
     // Add an event listener to the "Add Row" button
     const addButton = document.getElementById('add-row');
     addButton.addEventListener('click', addRow);
+
+    // Add an event listener to the form for form submission
+    const form = document.getElementById('my-form');
+    form.addEventListener('submit', function (event) {
+        event.preventDefault(); // Prevent the default form submission
+
+        const allData = getAllData();
+        console.log(allData);
+        for (let index = 0; index < allData.length; index++) {
+            const element = allData[index];
+            console.log(element)
+
+        }
+    });
 </script>
+
 {% endblock body %}
