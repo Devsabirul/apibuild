@@ -5,6 +5,9 @@
 <div class="container">
     <div class="row">
         <div class="col-12">
+            <!-- alert start  -->
+            
+            <!-- alert end  -->
             <div id="createTable">
                 <div id="button">
                     <span>📝</span> Create Table
@@ -225,7 +228,10 @@
                 'X-CSRFToken': '{{ csrf_token }}'
             },
             success: function (response) {
-                console.log(response);
+                console.log(response.status);
+                if (response.status === 'success') {
+                    location.reload()
+                }
             },
             error: function (error) {
                 console.error(error);
@@ -234,9 +240,6 @@
     });
 
     updateRowCount();
-
-
-
 </script>
 
 {% endblock body %}

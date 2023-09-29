@@ -14,9 +14,6 @@ def createDB(request):
         tablename = request.POST.get('tablename')
         fieldArry = request.POST.get('fieldArry')
         fields = json.loads(fieldArry)
-        for i in fields:
-            result = ''.join(i['fieldname'].split())
-            print(result.lower())
         writeModel(tablename, fields)
         response_data = {
             'message': 'Data Table created successfully', 'status': 'success'}
