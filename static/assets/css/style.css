@@ -1,6 +1,18 @@
-*::-webkit-scrollbar{
-    display: none;
+.removescrollbar::-webkit-scrollbar {
+    display: block;
+    height: 5px;
+    width: 100%;
+    background-color: gray;
+    border-radius: 10px;
 }
+
+/* Add a thumb */
+.removescrollbar::-webkit-scrollbar-thumb {
+    background: #a8a8a8;
+    border-radius: 10px;
+}
+
+
 #sidebarleft {
     background-color: #F3F3F3;
     height: 100vh;
