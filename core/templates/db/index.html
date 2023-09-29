@@ -41,40 +41,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <!-- <tr>
-                                    <td>
-                                        <input type="text" id="fieldname">
-                                    </td>
-                                    <td>
-                                        <select style="padding: 3px !important; width: 115px;" id="type">
-                                            <option value="CharField">CharField</option>
-                                            <option value="IntegerField">IntegerField</option>
-                                            <option value="IntegerField">IntegerField</option>
-                                        </select>
-                                    </td>
-                                    <td>
-                                        <input type="number" id="length" style="width: 150px;" value="500">
-                                    </td>
-                                    <td>
-                                        <input type="text" id="default" style="width: 150px;">
-                                    </td>
-                                    <td>
-                                        <select style="padding: 3px !important; width: 115px;" id="null">
-                                            <option value="True">True</option>
-                                            <option value="False">False</option>
-                                        </select>
-                                    </td>
-                                    <td>
-                                        <select style="padding: 3px !important; width: 115px;" id="blank">
-                                            <option value="True">True</option>
-                                            <option value="False">False</option>
-                                        </select>
-                                    </td>
-                                    <td>
-                                        <button class="btn btn-sm btn-outline-secondary"
-                                            style="font-weight: bold;width: 50px;">X</button>
-                                    </td>
-                                </tr> -->
+                               
                             </tbody>
                         </table>
                     </form>
@@ -87,14 +54,8 @@
         </div>
     </div>
 </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
-    let fieldCount = 0; // Initialize row count to 0
-
-    // Function to update the row count on the page
-    function updatefieldCount() {
-        const fieldCountElement = document.getElementById('field-count');
-        fieldCountElement.textContent = fieldCount;
-    }
     // Function to add a new row
     function addRow() {
         // Get a reference to the table and tbody
@@ -112,9 +73,39 @@
         const cell2 = document.createElement('td');
         cell2.innerHTML = `
         <select style="padding: 3px !important; width: 115px;" id="type">
-          <option value="CharField">CharField</option>
-          <option value="IntegerField">IntegerField</option>
-          <option value="IntegerField">IntegerField</option>
+            <option value="AutoField">AutoField</option>
+            <option value="BigAutoField">BigAutoField</option>
+            <option value="BinaryField">BinaryField</option>
+            <option value="BooleanField">BooleanField</option>
+            <option value="CharField">CharField</option>
+            <option value="DateField">DateField</option>
+            <option value="DateTimeField">DateTimeField</option>
+            <option value="DecimalField">DecimalField</option>
+            <option value="DurationField">DurationField</option>
+            <option value="EmailField">EmailField</option>
+            <option value="FileField">FileField</option>
+            <option value="FilePathField">FilePathField</option>
+            <option value="FloatField">FloatField</option>
+            <option value="ImageField">ImageField</option>
+            <option value="IntegerField">IntegerField</option>
+            <option value="GenericIPAddressField">GenericIPAddressField</option>
+            <option value="NullBooleanField">NullBooleanField</option>
+            <option value="PositiveIntegerField">PositiveIntegerField</option>    
+            <option value="TextField">TextField</option>
+            <option value="URLField">URLField</option>
+            <option value="UUIDField">UUIDField</option>
+            <option value="ForeignKey">ForeignKey</option>
+            <option value="ManyToManyField">ManyToManyField</option>
+            <option value="OneToOneField">OneToOneField</option>
+            <option value="ArrayField">ArrayField</option>
+            <option value="JSONField">JSONField</option>
+            <option value="HStoreField">HStoreField</option>
+            <option value="BinaryJSONField">BinaryJSONField</option>        
+            <option value="PositiveBigIntegerField">PositiveBigIntegerField</option>
+            <option value="PositiveSmallIntegerField">PositiveSmallIntegerField</option>
+            <option value="SlugField">SlugField</option>
+            <option value="SmallAutoField">SmallAutoField</option>
+            <option value="BigIntegerField">BigIntegerField</option>
         </select>
       `;
         newRow.appendChild(cell2);
@@ -188,7 +179,6 @@
 
             data.push(rowData);
         });
-
         return data;
     }
 
@@ -200,15 +190,39 @@
     const form = document.getElementById('my-form');
     form.addEventListener('submit', function (event) {
         event.preventDefault(); // Prevent the default form submission
-
         const allData = getAllData();
+        console.log(allData)
+
+        const tablename = document.getElementById('tablename').value;
+        let removeSpace = tablename.split(' ').join('')
+        let finalTableName = removeSpace.charAt(0).toUpperCase() + removeSpace.slice(1);
+
         console.log(allData);
+        var jsonData = JSON.stringify(allData);
+        $.ajax({
+            url: '/createtable',
+            method: 'POST',
+            data: {
+                'tablename': finalTableName,
+                'fieldArry': jsonData
+            },
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            success: function (response) {
+                console.log(response);
+            },
+            error: function (error) {
+                console.error(error);
+            }
+        });
         for (let index = 0; index < allData.length; index++) {
             const element = allData[index];
             console.log(element)
 
         }
     });
+
 </script>
 
 {% endblock body %}
