@@ -9,6 +9,7 @@
                 <div id="button">
                     <span>📝</span> Create Table
                 </div>
+
                 <div id="createtabelcontainer">
                     <form action="" method="post" id="my-form">
                         {% csrf_token %}
@@ -20,7 +21,7 @@
                             </div>
                             <div class="colnum" style="margin-left: 25px;">
                                 <label for="colnum" style="font-size: 15px;color: #424242;">Number of columns:</label>
-                                <input class="" value="0" id="field-count" type="number" name="colnum"
+                                <input class="" value="0" id="row-count" type="number" name="colnum"
                                     style="outline: none;width: 15em;margin-left: 5px;" disabled>
                             </div>
                             <div class="createdbutton">
@@ -28,22 +29,30 @@
                                     style="margin-left: 5px;">Create</button>
                             </div>
                         </div>
-                        <table class="table table-sm mt-4" id="dynamic-table">
-                            <thead>
-                                <tr>
-                                    <td scope="col">Field Name</td>
-                                    <td scope="col">Type</td>
-                                    <td scope="col">Length/Values</td>
-                                    <td scope="col">Default</td>
-                                    <td scope="col">Null</td>
-                                    <td scope="col">Blank</td>
-                                    <td scope="col">Action</td>
-                                </tr>
-                            </thead>
-                            <tbody>
-                               
-                            </tbody>
-                        </table>
+                        <div style="display: block;overflow-x: scroll;">
+                            <table class="table table-sm mt-4" id="dynamic-table">
+                                <thead>
+                                    <tr>
+                                        <td scope="col">Field Name</td>
+                                        <td scope="col">Type</td>
+                                        <td scope="col">Length/Values</td>
+                                        <td scope="col">Default</td>
+                                        <td scope="col">Null</td>
+                                        <td scope="col">Blank</td>
+                                        <td scope="col">Action</td>
+                                        <td scope="col">Action</td>
+                                        <td scope="col">Action</td>
+                                        <td scope="col">Action</td>
+                                        <td scope="col">Action</td>
+                                        <td scope="col">Action</td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                </tbody>
+                            </table>
+                        </div>
+
                     </form>
                     <div class="addrow">
                         <button class="btn btn-secondary btn-sm" style="margin-left: 5px;" id="add-row">Add
@@ -146,6 +155,7 @@
         // Add a click event listener to remove the row when the button is clicked
         deleteButton.addEventListener('click', function () {
             tbody.removeChild(newRow); // Remove the row when the button is clicked
+            updateRowCount();
         });
 
         cell7.appendChild(deleteButton);
@@ -153,8 +163,15 @@
 
         // Append the new row to the tbody
         tbody.appendChild(newRow);
+        updateRowCount();
+    }
+    // Function to update the row count
+    function updateRowCount() {
+        const rowCount = document.querySelectorAll('#dynamic-table tbody tr').length;
+        document.getElementById('row-count').value = rowCount;
     }
     // Function to get all input values as an array
+
     function getAllData() {
         // Get a reference to the table and tbody
         const table = document.getElementById('dynamic-table');
@@ -191,14 +208,12 @@
     form.addEventListener('submit', function (event) {
         event.preventDefault(); // Prevent the default form submission
         const allData = getAllData();
-        console.log(allData)
 
         const tablename = document.getElementById('tablename').value;
         let removeSpace = tablename.split(' ').join('')
         let finalTableName = removeSpace.charAt(0).toUpperCase() + removeSpace.slice(1);
 
-        console.log(allData);
-        var jsonData = JSON.stringify(allData);
+        const jsonData = JSON.stringify(allData);
         $.ajax({
             url: '/createtable',
             method: 'POST',
@@ -216,12 +231,11 @@
                 console.error(error);
             }
         });
-        for (let index = 0; index < allData.length; index++) {
-            const element = allData[index];
-            console.log(element)
-
-        }
     });
+
+    updateRowCount();
+
+
 
 </script>
 
