@@ -112,9 +112,39 @@
         const cell2 = document.createElement('td');
         cell2.innerHTML = `
         <select style="padding: 3px !important; width: 115px;" id="type">
-          <option value="CharField">CharField</option>
-          <option value="IntegerField">IntegerField</option>
-          <option value="IntegerField">IntegerField</option>
+            <option value="AutoField">AutoField</option>
+            <option value="BigAutoField">BigAutoField</option>
+            <option value="BinaryField">BinaryField</option>
+            <option value="BooleanField">BooleanField</option>
+            <option value="CharField">CharField</option>
+            <option value="DateField">DateField</option>
+            <option value="DateTimeField">DateTimeField</option>
+            <option value="DecimalField">DecimalField</option>
+            <option value="DurationField">DurationField</option>
+            <option value="EmailField">EmailField</option>
+            <option value="FileField">FileField</option>
+            <option value="FilePathField">FilePathField</option>
+            <option value="FloatField">FloatField</option>
+            <option value="ImageField">ImageField</option>
+            <option value="IntegerField">IntegerField</option>
+            <option value="GenericIPAddressField">GenericIPAddressField</option>
+            <option value="NullBooleanField">NullBooleanField</option>
+            <option value="PositiveIntegerField">PositiveIntegerField</option>    
+            <option value="TextField">TextField</option>
+            <option value="URLField">URLField</option>
+            <option value="UUIDField">UUIDField</option>
+            <option value="ForeignKey">ForeignKey</option>
+            <option value="ManyToManyField">ManyToManyField</option>
+            <option value="OneToOneField">OneToOneField</option>
+            <option value="ArrayField">ArrayField</option>
+            <option value="JSONField">JSONField</option>
+            <option value="HStoreField">HStoreField</option>
+            <option value="BinaryJSONField">BinaryJSONField</option>        
+            <option value="PositiveBigIntegerField">PositiveBigIntegerField</option>
+            <option value="PositiveSmallIntegerField">PositiveSmallIntegerField</option>
+            <option value="SlugField">SlugField</option>
+            <option value="SmallAutoField">SmallAutoField</option>
+            <option value="BigIntegerField">BigIntegerField</option>
         </select>
       `;
         newRow.appendChild(cell2);
