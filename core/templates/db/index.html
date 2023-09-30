@@ -5,10 +5,14 @@
 <div class="container">
     <div class="row">
         <div class="col-12">
+            <!-- alert start  -->
+
+            <!-- alert end  -->
             <div id="createTable">
                 <div id="button">
                     <span>📝</span> Create Table
                 </div>
+
                 <div id="createtabelcontainer">
                     <form action="" method="post" id="my-form">
                         {% csrf_token %}
@@ -17,33 +21,44 @@
                                 <label for="tablename" style="font-size: 15px;color: #424242;">Name:</label>
                                 <input class="" id="tablename" type="text" name="tablename"
                                     style="outline: none;width: 15em;margin-left: 5px;">
+                                <p class="d-none" id="tableinputalert"
+                                    style="font-size: 12px;font-weight: 500;color: red;margin-left: 52px;">table name
+                                    already exist.</p>
                             </div>
                             <div class="colnum" style="margin-left: 25px;">
                                 <label for="colnum" style="font-size: 15px;color: #424242;">Number of columns:</label>
-                                <input class="" value="0" id="field-count" type="number" name="colnum"
+                                <input class="" value="0" id="row-count" type="number" name="colnum"
                                     style="outline: none;width: 15em;margin-left: 5px;" disabled>
                             </div>
                             <div class="createdbutton">
-                                <button type="submit" class="btn btn-outline-secondary btn-sm"
-                                    style="margin-left: 5px;">Create</button>
+                                <button type="submit" class="btn btn-outline-secondary btn-sm" style="margin-left: 5px;"
+                                    id="createbtn" disabled>Create</button>
                             </div>
                         </div>
-                        <table class="table table-sm mt-4" id="dynamic-table">
-                            <thead>
-                                <tr>
-                                    <td scope="col">Field Name</td>
-                                    <td scope="col">Type</td>
-                                    <td scope="col">Length/Values</td>
-                                    <td scope="col">Default</td>
-                                    <td scope="col">Null</td>
-                                    <td scope="col">Blank</td>
-                                    <td scope="col">Action</td>
-                                </tr>
-                            </thead>
-                            <tbody>
-                               
-                            </tbody>
-                        </table>
+                        <div class="removescrollbar" style="display: block;overflow-x: scroll;margin-bottom: 5px;">
+                            <table class="table table-sm mt-4" id="dynamic-table">
+                                <thead>
+                                    <tr>
+                                        <td scope="col">Field Name</td>
+                                        <td scope="col">Type</td>
+                                        <td scope="col">Length/Values</td>
+                                        <td scope="col">Default</td>
+                                        <td scope="col">Null</td>
+                                        <td scope="col">Blank</td>
+                                        <td scope="col">Action</td>
+                                        <td scope="col">Action</td>
+                                        <td scope="col">Action</td>
+                                        <td scope="col">Action</td>
+                                        <td scope="col">Action</td>
+                                        <td scope="col">Action</td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                </tbody>
+                            </table>
+                        </div>
+
                     </form>
                     <div class="addrow">
                         <button class="btn btn-secondary btn-sm" style="margin-left: 5px;" id="add-row">Add
@@ -110,6 +125,22 @@
       `;
         newRow.appendChild(cell2);
 
+        cell2.addEventListener("change", function () {
+            const rows = tbody.querySelectorAll('tr');
+            // Loop through each row and extract input values
+            rows.forEach(function (row) {
+                const selectype = row.querySelectorAll('select');
+                const inputs = row.querySelectorAll('input');
+                if (selectype[0].value === 'IntegerField') {
+                    inputs[1].setAttribute('disabled', true)
+                    inputs[2].setAttribute('disabled', true)
+                } else {
+                    inputs[1].removeAttribute('disabled')
+                    inputs[2].removeAttribute('disabled')
+                }
+            });
+        });
+
         const cell3 = document.createElement('td');
         cell3.innerHTML = '<input type="number" id="length" style="width: 150px;" value="500">';
         newRow.appendChild(cell3);
@@ -146,6 +177,7 @@
         // Add a click event listener to remove the row when the button is clicked
         deleteButton.addEventListener('click', function () {
             tbody.removeChild(newRow); // Remove the row when the button is clicked
+            updateRowCount();
         });
 
         cell7.appendChild(deleteButton);
@@ -153,8 +185,20 @@
 
         // Append the new row to the tbody
         tbody.appendChild(newRow);
+        updateRowCount();
+    }
+    // Function to update the row count
+    function updateRowCount() {
+        const rowCount = document.querySelectorAll('#dynamic-table tbody tr').length;
+        document.getElementById('row-count').value = rowCount;
+        if (rowCount >= 2) {
+            document.getElementById('createbtn').removeAttribute('disabled')
+        } else {
+            document.getElementById('createbtn').setAttribute('disabled', true)
+        }
     }
     // Function to get all input values as an array
+
     function getAllData() {
         // Get a reference to the table and tbody
         const table = document.getElementById('dynamic-table');
@@ -191,14 +235,12 @@
     form.addEventListener('submit', function (event) {
         event.preventDefault(); // Prevent the default form submission
         const allData = getAllData();
-        console.log(allData)
 
         const tablename = document.getElementById('tablename').value;
         let removeSpace = tablename.split(' ').join('')
         let finalTableName = removeSpace.charAt(0).toUpperCase() + removeSpace.slice(1);
 
-        console.log(allData);
-        var jsonData = JSON.stringify(allData);
+        const jsonData = JSON.stringify(allData);
         $.ajax({
             url: '/createtable',
             method: 'POST',
@@ -210,19 +252,20 @@
                 'X-CSRFToken': '{{ csrf_token }}'
             },
             success: function (response) {
-                console.log(response);
+                if (response.status === 'success') {
+                    location.reload()
+                } else {
+                    document.getElementById('tablename').classList.add('tablenameinput')
+                    document.getElementById('tableinputalert').classList.remove('d-none')
+                }
             },
             error: function (error) {
                 console.error(error);
             }
         });
-        for (let index = 0; index < allData.length; index++) {
-            const element = allData[index];
-            console.log(element)
-
-        }
     });
 
+    updateRowCount();
 </script>
 
 {% endblock body %}
