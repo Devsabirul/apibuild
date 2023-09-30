@@ -92,3 +92,7 @@ div#createtabelcontainer {
 table.table.table-sm {
     --bs-table-bg: none !important;
 }
+
+.tablenameinput {
+    border: 1px solid red;
+}

@@ -22,13 +22,25 @@ def writeModel(tablename, fields):
             field_definitions.append(
                 f"{field} = models.{i['type']}(auto_now=True, null={i['null']}, blank={i['blank']} )")
 
-    # Create the model class
-    model_class = f'\n\nclass {tablename}(models.Model):\n\t'
-    model_class += '\n\t'.join(field_definitions)
-    read_line.insert(len(read_line), model_class)
+    checktablename = checkmodelsfile(tablename, file_name)
+    if checktablename != True:
+        # Create the model class
+        model_class = f'\n\nclass {tablename}(models.Model):\n\t'
+        model_class += '\n\t'.join(field_definitions)
+        read_line.insert(len(read_line), model_class)
 
-    # Reopen the file in write mode and write the modified content
-    open_file = open(file_name, 'w')
-    open_file.writelines(read_line)
-    open_file.close()
-    return True
+        # Reopen the file in write mode and write the modified content
+        open_file = open(file_name, 'w')
+        open_file.writelines(read_line)
+        open_file.close()
+
+        return True
+    return False
+
+
+def checkmodelsfile(tablename, filepath):
+    openfile = open(filepath, 'rt')
+    readfile = openfile.read()
+    if f"class {tablename}(models.Model):" in readfile:
+        return True
+    return False

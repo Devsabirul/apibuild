@@ -14,8 +14,12 @@ def createDB(request):
         tablename = request.POST.get('tablename')
         fieldArry = request.POST.get('fieldArry')
         fields = json.loads(fieldArry)
-        writeModel(tablename, fields)
-        response_data = {
-            'message': 'Data Table created successfully', 'status': 'success'}
+        is_writemodel = writeModel(tablename, fields)
+        response_data = None
+        if is_writemodel == True:
+            response_data = {
+                'message': 'Data Table created successfully', 'status': 'success'}
+        else:
+            response_data = {'status': 'failed'}
         return JsonResponse(response_data)
     return render(request, 'db/index.html')
