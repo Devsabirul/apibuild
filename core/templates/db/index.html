@@ -6,7 +6,6 @@
     <div class="row">
         <div class="col-12">
             <!-- alert start  -->
-
             <!-- alert end  -->
             <div id="createTable">
                 <div id="button">
@@ -22,11 +21,17 @@
                                 <input class="" id="tablename" type="text" name="tablename"
                                     style="outline: none;width: 15em;margin-left: 5px;">
                                 <p class="d-none" id="tableinputalert"
-                                    style="font-size: 12px;font-weight: 500;color: red;margin-left: 52px;">table name
+                                    style="font-size: 12px;font-weight: 500;color: red;margin-left: 52px;">table
+                                    name
                                     already exist.</p>
+
+                                <p class="d-none" id="columnalert"
+                                    style="font-size: 12px;font-weight: 500;color: red;margin-left: 52px;"> empty
+                                    columns not accept</p>
                             </div>
                             <div class="colnum" style="margin-left: 25px;">
-                                <label for="colnum" style="font-size: 15px;color: #424242;">Number of columns:</label>
+                                <label for="colnum" style="font-size: 15px;color: #424242;">Number of
+                                    columns:</label>
                                 <input class="" value="0" id="row-count" type="number" name="colnum"
                                     style="outline: none;width: 15em;margin-left: 5px;" disabled>
                             </div>
@@ -45,11 +50,11 @@
                                         <td scope="col">Default</td>
                                         <td scope="col">Null</td>
                                         <td scope="col">Blank</td>
-                                        <td scope="col">Action</td>
-                                        <td scope="col">Action</td>
-                                        <td scope="col">Action</td>
-                                        <td scope="col">Action</td>
-                                        <td scope="col">Action</td>
+                                        <td scope="col">Attributes</td>
+                                        <td scope="col">Index</td>
+                                        <td scope="col">Virtuality</td>
+                                        <td scope="col">Move column</td>
+                                        <td scope="col">Comments</td>
                                         <td scope="col">Action</td>
                                     </tr>
                                 </thead>
@@ -167,7 +172,60 @@
       `;
         newRow.appendChild(cell6);
 
+        const cell8 = document.createElement('td');
+        cell8.innerHTML = `
+        <select style="padding: 3px !important; width: 115px;" id="Attributes">
+            <option value="Binary">Binary</option>
+            <option value="Unsigned">Unsigned</option>
+            <label for="unsigned_field">Unsigned Zero Field</label>
+            <option value="on update CURRENT_TIMESTAMP">on update CURRENT_TIMESTAMP</option>
+        </select>
+      `;
+        newRow.appendChild(cell8);
+
         const cell7 = document.createElement('td');
+        cell7.innerHTML = `
+        <textarea type="text" id="comments" style="width: 120px; height: 30px;"></textarea>         
+      `;
+        newRow.appendChild(cell7);
+
+        const cell9 = document.createElement('td');
+        cell9.innerHTML = `
+        <select style="padding: 3px !important; width: 115px;" id="index">
+            <option value="none_0">---</option>
+            <option value="Primary">PRIMARY</option>
+            <option value="Unique">UNIQUE</option>
+            <option value=Index">INDEX</option>
+            <option value="Fulltext">FULLTEXT</option>
+            <option value="Spatial">SPATIAL</option>
+        </select>        
+      `;
+        newRow.appendChild(cell9);
+
+        const cell10 = document.createElement('td');
+        cell10.innerHTML = `
+        <select style="padding: 3px !important; width: 115px;" id="Virtuality">
+            <option value="none_0">---</option>
+            <option value="VIRTUAL">VIRTUAL</option>
+            <option value="STORED">STORED</option>
+            
+        </select>        
+      `;
+        newRow.appendChild(cell10);
+
+        const cell11 = document.createElement('td');
+        cell11.innerHTML = `
+        <select style="padding: 3px !important; width: 115px;" id="Virtuality">
+            <option value="none_0">---</option>
+            <option value="first">first</option>
+            <option value="after">after</option>
+            <option value="after">after</option>
+            
+        </select>        
+      `;
+        newRow.appendChild(cell11);
+
+        const cell12 = document.createElement('td');
         const deleteButton = document.createElement('button');
         deleteButton.className = 'btn btn-sm btn-outline-secondary';
         deleteButton.style.fontWeight = 'bold';
@@ -180,8 +238,8 @@
             updateRowCount();
         });
 
-        cell7.appendChild(deleteButton);
-        newRow.appendChild(cell7);
+        cell12.appendChild(deleteButton);
+        newRow.appendChild(cell12);
 
         // Append the new row to the tbody
         tbody.appendChild(newRow);
@@ -191,11 +249,13 @@
     function updateRowCount() {
         const rowCount = document.querySelectorAll('#dynamic-table tbody tr').length;
         document.getElementById('row-count').value = rowCount;
+
         if (rowCount >= 2) {
             document.getElementById('createbtn').removeAttribute('disabled')
         } else {
             document.getElementById('createbtn').setAttribute('disabled', true)
         }
+
     }
     // Function to get all input values as an array
 
@@ -235,34 +295,66 @@
     form.addEventListener('submit', function (event) {
         event.preventDefault(); // Prevent the default form submission
         const allData = getAllData();
+        const tablenamevalue = document.getElementById('tablename').value;
+        var colalert = false;
+        var tablenamealert = false;
+        if (tablenamevalue.trim() === "") {
 
+            tablenamealert = true;
+        } else {
+
+            tablenamealert = false;
+        }
+        console.log(tablenamealert)
+
+        for (let index = 0; index < allData.length; index++) {
+            const element = allData[index];
+            var fieldname = element.fieldname
+            if (fieldname === "") {
+                document.getElementById('columnalert').classList.remove('d-none')
+                colalert = true;
+            } else {
+                document.getElementById('columnalert').classList.add('d-none')
+                colalert = false;
+            }
+        }
         const tablename = document.getElementById('tablename').value;
         let removeSpace = tablename.split(' ').join('')
         let finalTableName = removeSpace.charAt(0).toUpperCase() + removeSpace.slice(1);
 
         const jsonData = JSON.stringify(allData);
-        $.ajax({
-            url: '/createtable',
-            method: 'POST',
-            data: {
-                'tablename': finalTableName,
-                'fieldArry': jsonData
-            },
-            headers: {
-                'X-CSRFToken': '{{ csrf_token }}'
-            },
-            success: function (response) {
-                if (response.status === 'success') {
-                    location.reload()
-                } else {
-                    document.getElementById('tablename').classList.add('tablenameinput')
-                    document.getElementById('tableinputalert').classList.remove('d-none')
+
+        if (tablenamealert != true) {
+            if (colalert != true) {
+                if (colalert != true) {
+                    $.ajax({
+                        url: '/createtable',
+                        method: 'POST',
+                        data: {
+                            'tablename': finalTableName,
+                            'fieldArry': jsonData
+                        },
+                        headers: {
+                            'X-CSRFToken': '{{ csrf_token }}'
+                        },
+                        success: function (response) {
+
+                            if (response.status === 'success') {
+                                location.reload()
+                            } else {
+                                document.getElementById('tablename').classList.add('tablenameinput')
+                                document.getElementById('tableinputalert').classList.remove('d-none')
+                            }
+                        },
+                        error: function (error) {
+                            console.error(error);
+                        }
+                    });
                 }
-            },
-            error: function (error) {
-                console.error(error);
             }
-        });
+        }
+
+
     });
 
     updateRowCount();
