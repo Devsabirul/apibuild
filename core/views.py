@@ -1,8 +1,11 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from django.http import HttpResponse
 import json
-from .witemodels import *
+from .writemodel import *
 from django.http import JsonResponse
+import os
+import subprocess
+from django.apps import apps
 
 
 def home(request):
@@ -10,6 +13,15 @@ def home(request):
 
 
 def createDB(request):
+    # start create models.py function and logic
+    app_name = 'core'
+    app_models = apps.get_app_config(app_name).get_models()
+    model_names = [model.__name__ for model in app_models]
+    context_data = {
+        'models':model_names
+    }
+    models = json.dumps(context_data)
+
     if request.method == 'POST':
         tablename = request.POST.get('tablename')
         fieldArry = request.POST.get('fieldArry')
@@ -17,9 +29,26 @@ def createDB(request):
         is_writemodel = writeModel(tablename, fields)
         response_data = None
         if is_writemodel == True:
-            response_data = {
+            response_data = { 
                 'message': 'Data Table created successfully', 'status': 'success'}
         else:
             response_data = {'status': 'failed'}
         return JsonResponse(response_data)
-    return render(request, 'db/index.html')
+    return render(request, 'db/index.html',{'context': models})
+
+
+def loading(request):
+     # Run makemigrations
+    subprocess.run(['python', 'manage.py', 'makemigrations'], check=True, stderr=subprocess.PIPE)
+    # Run migrate
+    subprocess.run(['python', 'manage.py', 'migrate'], check=True, stderr=subprocess.PIPE)
+    return render(request,'db/loading.html')
+
+def showtable(request):
+    app_name = 'core'
+    app_models = apps.get_app_config(app_name).get_models()
+    model_names = [model.__name__ for model in app_models]
+    context = {
+        'model_names':model_names
+    }
+    return render(request,'db/showtable.html',context)

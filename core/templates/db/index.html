@@ -47,7 +47,7 @@
                                         <td scope="col">Field Name</td>
                                         <td scope="col">Type</td>
                                         <td scope="col">Length/Values</td>
-                                        <td scope="col">Default</td>
+                                        <td scope="col">Related model</td>
                                         <td scope="col">Null</td>
                                         <td scope="col">Blank</td>
                                         <td scope="col">Attributes</td>
@@ -93,39 +93,22 @@
         const cell2 = document.createElement('td');
         cell2.innerHTML = `
         <select style="padding: 3px !important; width: 115px;" id="type">
-            <option value="AutoField">AutoField</option>
-            <option value="BigAutoField">BigAutoField</option>
-            <option value="BinaryField">BinaryField</option>
             <option value="BooleanField">BooleanField</option>
             <option value="CharField">CharField</option>
-            <option value="DateField">DateField</option>
             <option value="DateTimeField">DateTimeField</option>
             <option value="DecimalField">DecimalField</option>
-            <option value="DurationField">DurationField</option>
             <option value="EmailField">EmailField</option>
             <option value="FileField">FileField</option>
-            <option value="FilePathField">FilePathField</option>
-            <option value="FloatField">FloatField</option>
             <option value="ImageField">ImageField</option>
             <option value="IntegerField">IntegerField</option>
-            <option value="GenericIPAddressField">GenericIPAddressField</option>
-            <option value="NullBooleanField">NullBooleanField</option>
             <option value="PositiveIntegerField">PositiveIntegerField</option>    
             <option value="TextField">TextField</option>
-            <option value="URLField">URLField</option>
             <option value="UUIDField">UUIDField</option>
             <option value="ForeignKey">ForeignKey</option>
             <option value="ManyToManyField">ManyToManyField</option>
             <option value="OneToOneField">OneToOneField</option>
-            <option value="ArrayField">ArrayField</option>
             <option value="JSONField">JSONField</option>
-            <option value="HStoreField">HStoreField</option>
-            <option value="BinaryJSONField">BinaryJSONField</option>        
-            <option value="PositiveBigIntegerField">PositiveBigIntegerField</option>
-            <option value="PositiveSmallIntegerField">PositiveSmallIntegerField</option>
             <option value="SlugField">SlugField</option>
-            <option value="SmallAutoField">SmallAutoField</option>
-            <option value="BigIntegerField">BigIntegerField</option>
         </select>
       `;
         newRow.appendChild(cell2);
@@ -151,7 +134,19 @@
         newRow.appendChild(cell3);
 
         const cell4 = document.createElement('td');
-        cell4.innerHTML = '<input type="text" id="default" style="width: 150px;">';
+        var contextData = JSON.parse('{{ context|escapejs|safe }}');
+        var models = contextData.models;
+        const selectElement = document.createElement('select');
+        selectElement.style.cssText = "padding: 3px !important; width: 115px;";
+        selectElement.id = "model_names";
+        for (let index = 0; index < models.length; index++) {
+            const element = models[index];
+            const option = document.createElement('option');
+            option.value = element;
+            option.textContent = element;
+            selectElement.appendChild(option);
+        }
+        cell4.appendChild(selectElement);
         newRow.appendChild(cell4);
 
         const cell5 = document.createElement('td');
@@ -204,11 +199,9 @@
 
         const cell10 = document.createElement('td');
         cell10.innerHTML = `
-        <select style="padding: 3px !important; width: 115px;" id="Virtuality">
-            <option value="none_0">---</option>
+        <select style="padding: 3px !important; width: 115px;" id="slug">
             <option value="VIRTUAL">VIRTUAL</option>
             <option value="STORED">STORED</option>
-            
         </select>        
       `;
         newRow.appendChild(cell10);
@@ -338,9 +331,8 @@
                             'X-CSRFToken': '{{ csrf_token }}'
                         },
                         success: function (response) {
-
                             if (response.status === 'success') {
-                                location.reload()
+                                window.location = '/loading'
                             } else {
                                 document.getElementById('tablename').classList.add('tablenameinput')
                                 document.getElementById('tableinputalert').classList.remove('d-none')
