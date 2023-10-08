@@ -23,6 +23,7 @@
 #sidebarright {
     height: 100vh;
     width: 80%;
+    overflow: scroll;
 }
 
 #header {
